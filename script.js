@@ -6,6 +6,7 @@ var openedCards = [];
 var firstClick = 1;
 var timer = 60;
 var timerId = 0;
+let testVar;
 
 class Card {
 	constructor(id) {
@@ -105,7 +106,7 @@ function putNewCards() {
 
 function toDefault() {
     let timerObj = document.querySelector('.timer_wrapper');
-    
+
     for(let i = 0; i < cards.length; i++)
     {
         cards[i].flipper.classList.remove('rotate');
