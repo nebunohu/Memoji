@@ -1,0 +1,39 @@
+include  ./components/card/card
+
+doctype html
+html(lang="ru")
+    head
+        meta(charset="utf-8")
+        title Memoji
+        link(rel="stylesheet" type="text/css" href="style.css")
+    body
+        header
+            span Memoji
+        
+        main
+            .modal_window
+                .popup_window
+                    .popup_text
+                        span(class="letter1") L
+                        span(class="letter2") o
+                        span(class="letter3") s
+                        span(class="letter4") e
+                    .button
+                        span Try again
+            .cards_container(id="cards_container")            
+                +card("card0")
+                +card("card1")
+                +card("card2")
+                +card("card3")
+                +card("card4")
+                +card("card5")
+                +card("card6")
+                +card("card7")
+                +card("card8")
+                +card("card9")
+                +card("card10")
+                +card("card11")
+            .timer_wrapper 01:00 
+        footer
+
+        script(src="./script.js") 
