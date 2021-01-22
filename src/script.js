@@ -1,14 +1,24 @@
 import './style.scss';
 
-var backs = Array.from(document.querySelectorAll('.card_wrapper_back'));
-var flippers = Array.from(document.querySelectorAll('.flipper'));
-var cardsContainer = document.querySelector('.cards_container')
-var cards = [];
-var openedCards = [];
-var firstClick = 1;
-var timer = 60;
-var timerId = 0;
-let testVar;
+let MEMOJIAPP = MEMOJIAPP || {};
+
+MEMOJIAPP.namespace = function(propsString) {
+    let parent = MEMOJIAPP,
+        parts = propsString.split('.'),
+        i;
+
+    if(parts[0] === 'MEMOJIAPP') {
+        parts = parts.slice(1);
+    }
+
+    for(i = 0; i < parts.length; i++) {
+        if(typeof parent[parts[i]] === 'undefined') {
+            parent[parts[i]] = {};
+        }
+        parent = parent[parts[i]];
+    }
+    return parent;
+}
 
 class Card {
 	constructor(id) {
@@ -28,8 +38,13 @@ class Card {
 
 
 function rotate() {
-    let currentCard = null;
-    let currentFlipper = null;
+    let currentCard = null,
+        currentFlipper = null,
+        cardsContainer = MEMOJIAPP.cardsContainer,
+        firstClick = MEMOJIAPP.flags.firstClick,
+        cards = MEMOJIAPP.cards,
+        openedCards = MEMOJIAPP.openedCards,
+        timerId = MEMOJIAPP.timer.id;
 
     cardsContainer.addEventListener('click', function(event){
         if(event.target.closest('.flipper'))
@@ -75,12 +90,16 @@ function mixEmojis () {
 }
 
 function putCardsOnTable() {
-    let emojis;
-    let imgsArray = [];
+    let emojis,
+        imgsArray = [],
+        i,
+        backs = MEMOJIAPP.backs,
+        cards = MEMOJIAPP.cards,
+        flippers = MEMOJIAPP.flippers;
 
     emojis = mixEmojis();
 
-    for(let i=0; i < emojis.length; i++)
+    for(i=0; i < emojis.length; i++)
     {
         imgsArray.push(document.createElement('div'));
         imgsArray[i].textContent = emojis[i];
@@ -95,8 +114,9 @@ function putCardsOnTable() {
 }
 
 function putNewCards() {
-    let emojis;
-    let imgsArray = Array.from(document.querySelectorAll('.image_wrapper'));
+    let emojis,
+        imgsArray = Array.from(document.querySelectorAll('.image_wrapper'));
+        cards = MEMOJIAPP.cards;
 
     emojis = mixEmojis();
     for(let i =0; i < emojis.length; i++)
@@ -107,9 +127,14 @@ function putNewCards() {
 }
 
 function toDefault() {
-    let timerObj = document.querySelector('.timer_wrapper');
+    let timerObj = document.querySelector('.timer_wrapper'),
+        cards = MEMOJIAPP.cards,
+        openedCards = MEMOJIAPP.openedCards,
+        firstClick = MEMOJIAPP.flags.firstClick,
+        timer = MEMOJIAPP.timer.counter,
+        i;
 
-    for(let i = 0; i < cards.length; i++)
+    for(i = 0; i < cards.length; i++)
     {
         cards[i].flipper.classList.remove('rotate');
         cards[i].back.classList.remove('correct'); 
@@ -123,8 +148,9 @@ function toDefault() {
 
 }
 function endGame() {
-    let popupButton = document.querySelector(".popup_window .button");
-    let modalWindow = document.querySelector(".modal_window");
+    let popupButton = document.querySelector(".popup_window .button"),
+        modalWindow = document.querySelector(".modal_window"),
+        timerId = MEMOJIAPP.timer.id;
 
     modalWindow.classList.add('visible');
     clearInterval(timerId);
@@ -146,16 +172,18 @@ function endGame() {
 }
 
 function win() {
-    let letter;
-    let win = 1;
-    let firstLetter = document.querySelector(".popup_text span");
-    let deleteLetter;
-    let popupText = document.querySelector(".popup_text");
+    let letter,
+        win = 1,
+        firstLetter = document.querySelector(".popup_text span"),
+        deleteLetter,
+        popupText = document.querySelector(".popup_text"),
+        cards = MEMOJIAPP.cards,
+        i;
 
 
     if(firstLetter.textContent === 'L')
     {
-        for(let i = 0; i < 4; i++)
+        for(i = 0; i < 4; i++)
         {
             deleteLetter = document.querySelector(".popup_text span");
             popupText.removeChild(deleteLetter);
@@ -175,7 +203,7 @@ function win() {
         popupText.appendChild(letter);
     }
 
-    for(let i = 0; i < cards.length; i++)
+    for(i = 0; i < cards.length; i++)
     {
         if(!cards[i].back.classList.contains('correct')) win = 0;
     }
@@ -187,13 +215,13 @@ function win() {
 }
 
 function lose() {
-    let firstLetter = document.querySelector(".popup_text span");
-    let popupText = document.querySelector(".popup_text");
-    let letter, deleteLetter;
+    let firstLetter = document.querySelector(".popup_text span"),
+        popupText = document.querySelector(".popup_text"),
+        letter, deleteLetter, i;
 
     if(firstLetter.textContent === 'W')
     {
-        for(let i = 0; i < 3; i++)
+        for(i = 0; i < 3; i++)
         {
             deleteLetter = document.querySelector(".popup_text span");
             popupText.removeChild(deleteLetter);
@@ -221,9 +249,10 @@ function lose() {
 }
 
 function decrTimer() {
-    let timerObj = document.querySelector('.timer_wrapper');
-    let minutes, seconds;
-    let minutesStr, secondsStr;
+    let timerObj = document.querySelector('.timer_wrapper'),
+        minutes, seconds,
+        minutesStr, secondsStr,
+        timer = MEMOJIAPP.timer.counter;
     timer--;
     minutes = Math.floor(timer / 60);
     minutesStr = minutes.toString();
@@ -241,7 +270,10 @@ function decrTimer() {
 }
 
 function compareCards() {
-    let correct = 1;
+    let correct = 1,
+        openedCards = MEMOJIAPP.openedCards,
+        cards = MEMOJIAPP.cards,
+        i;
     switch(openedCards.length)
     {
         case 2:
@@ -272,7 +304,7 @@ function compareCards() {
         break;
     }
 
-    for(let i = 0; i < cards.length; i++)
+    for(i = 0; i < cards.length; i++)
     {
         if(!cards[i].back.classList.contains('correct')) correct = 0;
     }
@@ -283,6 +315,23 @@ function compareCards() {
 }
 
 (function startGame(){
+    MEMOJIAPP.namespace('cards');
+    MEMOJIAPP.cards = [];
+    MEMOJIAPP.namespace('backs');
+    MEMOJIAPP.backs = Array.from(document.querySelectorAll('.card_wrapper_back'));
+    MEMOJIAPP.namespace('flippers');
+    MEMOJIAPP.flippers = Array.from(document.querySelectorAll('.flipper'));
+    MEMOJIAPP.namespace('cardsContainer');
+    MEMOJIAPP.cardsContainer = document.querySelector('.cards_container')
+    MEMOJIAPP.namespace('openedCards')
+    MEMOJIAPP.openedCards = [];
+    MEMOJIAPP.namespace('flags.firstClick')
+    MEMOJIAPP.flags.firstClick = 1;
+    MEMOJIAPP.namespace('timer.counter');
+    MEMOJIAPP.timer.counter = 60;
+    MEMOJIAPP.namespace('timer.id');
+    MEMOJIAPP.timer.id = 0;
+
     putCardsOnTable();
     rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
