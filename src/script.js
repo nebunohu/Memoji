@@ -1,3 +1,4 @@
+import { HotModuleReplacementPlugin } from 'webpack';
 import './style.scss';
 
 let MEMOJIAPP = MEMOJIAPP || {};
@@ -36,28 +37,41 @@ class Card {
     }
 }
 
+function startGameWindow() {
+    let popupWindow = document.querySelector('.modalWindow .beforeGame'),
+        modalWindow = document.querySelector('.modalWindow');
+        i = 0;
+
+    popupWindow.addEventListener('click', function(event) {
+        if (event.target.closest('.button'))
+        {
+            modalWindow.classList.remove('visible');
+        }
+    })
+}
 
 function rotate() {
     let currentCard = null,
-        currentFlipper = null,
         cardsContainer = MEMOJIAPP.cardsContainer,
         firstClick = MEMOJIAPP.flags.firstClick,
         cards = MEMOJIAPP.cards,
         openedCards = MEMOJIAPP.openedCards,
         timerId = MEMOJIAPP.timer.id;
 
-    cardsContainer.addEventListener('click', function(event){
+    cardsContainer.addEventListener('click', function(event) {
+        let currentFlipper = null,
+            i;
         if(event.target.closest('.flipper'))
         {
             currentFlipper = event.target.closest('.flipper');
-          if(firstClick)
+            if(firstClick)
             {
                 firstClick = 0;
                 timerId = window.setInterval(() => decrTimer(),1000);
             }
         
             // сохранение индекса текущего элемента
-            for(var i = 0; i < cards.length;  i++)
+            for(i = 0; i < cards.length;  i++)
             {
                 if(cards[i].flipper === currentFlipper)
                 {
@@ -80,6 +94,9 @@ function rotate() {
         }, false);
 }
 
+/* 
+    Функция перемешивает эмодзи в случайном порядке
+*/
 function mixEmojis () {
     let emojis = ['🐰', '🐰', '🐶', '🐶', '🐱', '🐱', '🐼', '🐼', '🐵', '🐵', '🐯','🐯'];
 
@@ -315,23 +332,28 @@ function compareCards() {
 }
 
 (function startGame(){
-    MEMOJIAPP.namespace('cards');
+    MEMOJIAPP.namespace('cards'); // Массив всех карточек на игровом поле
     MEMOJIAPP.cards = [];
-    MEMOJIAPP.namespace('backs');
+    MEMOJIAPP.namespace('backs'); // Массив всех задников на игровом поле
     MEMOJIAPP.backs = Array.from(document.querySelectorAll('.card_wrapper_back'));
-    MEMOJIAPP.namespace('flippers');
+    MEMOJIAPP.namespace('flippers'); // Массив всех поворачивающихся элементов карт
     MEMOJIAPP.flippers = Array.from(document.querySelectorAll('.flipper'));
-    MEMOJIAPP.namespace('cardsContainer');
-    MEMOJIAPP.cardsContainer = document.querySelector('.cards_container')
-    MEMOJIAPP.namespace('openedCards')
+    MEMOJIAPP.namespace('cardsContainer'); // контейнер для карт на игровом поле
+    MEMOJIAPP.cardsContainer = document.querySelector('.cardsContainer');
+    MEMOJIAPP.namespace('openedCards'); // перевернутые карты
     MEMOJIAPP.openedCards = [];
-    MEMOJIAPP.namespace('flags.firstClick')
+    MEMOJIAPP.namespace('flags.firstClick'); // флаг начала игры
     MEMOJIAPP.flags.firstClick = 1;
-    MEMOJIAPP.namespace('timer.counter');
+    MEMOJIAPP.namespace('timer.counter'); // счетчик игрового таймера 
     MEMOJIAPP.timer.counter = 60;
-    MEMOJIAPP.namespace('timer.id');
+    MEMOJIAPP.namespace('timer.id'); // идентификатор игрового таймера
     MEMOJIAPP.timer.id = 0;
+    MEMOJIAPP.namespace('diffucultyLevel');
+    MEMOJIAPP.difficultyLevel = 0;
+    MEMOJIAPP.namespace('resultTable.playerName');
+    MEMOJIAPP.namespace('resultTable.score');
 
+    startGameWindow();
     putCardsOnTable();
     rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);

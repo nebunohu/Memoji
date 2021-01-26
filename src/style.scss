@@ -23,7 +23,7 @@ main {
     color:#434344;
 }
 
-.modal_window {
+.modalWindow {
     display: none;
     position: absolute;
     align-content: center;
@@ -36,12 +36,8 @@ main {
     z-index: 100;
 }
 
-.visible {
-    display: flex;
-}
-
-.popup_window {
-    display: flex;
+.popupWindow {
+    display: none;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
@@ -51,29 +47,34 @@ main {
     height: fit-content;
     background-color: rgb(255,255,255);
 }
-.popup_text{
+
+.visible {
+    display: flex;
+}
+
+.popupText{
     display: flex;
     margin: 30px 0 0 0;
 }
 
-.popup_text .letter1,
-.popup_text .letter2,
-.popup_text .letter3,
-.popup_text .letter4 {
+.popupText .letter1,
+.popupText .letter2,
+.popupText .letter3,
+.popupText .letter4 {
     animation-name: jump;
     animation-duration: 1s;
     animation-iteration-count: infinite;
 }
 
-.popup_text .letter2 {
+.popupText .letter2 {
     animation-delay: 0.125s;
 }
 
-.popup_text .letter3 {
+.popupText .letter3 {
     animation-delay: 0.25s;
 }
 
-.popup_text .letter4 {
+.popupText .letter4 {
     animation-delay: 0.375s;
 }
 
@@ -86,7 +87,7 @@ main {
     }
 }
 
-.popup_window .button {
+.popupWindow .button {
     display: flex;
     align-items: center;
     margin: 40px 0 30px 0;
@@ -99,15 +100,15 @@ main {
     cursor: pointer;
 }
 
-.popup_window .button:hover {
+.popupWindow .button:hover {
     opacity: 0.9;
 }
 
-.popup_window .pressed {
+.popupWindow .pressed {
     box-shadow: inset 2px 1px 8px rgb(0,0,0);
 }
 
-.cards_container {
+.cardsContainer {
     display: flex;
     max-width: 595px;
     margin: 0 auto;
@@ -192,7 +193,7 @@ main {
     height: max-content;
 }
 
-.timer_wrapper {
+.timerWrapper {
     margin: 5px 0 0 0;
     font-size: 32px;
 

@@ -11,16 +11,25 @@ html(lang="ru")
             span Memoji
         
         main
-            .modal_window
-                .popup_window
-                    .popup_text
+            .modalWindow(class="visible")
+                .popupWindow(class="afterGame")
+                    .popupText
                         span(class="letter1") L
                         span(class="letter2") o
                         span(class="letter3") s
                         span(class="letter4") e
                     .button
                         span Try again
-            .cards_container(id="cards_container")            
+                .popupWindow(class="beforeGame visible")
+                    input(class="difficultyLevel" type="radio" name="difficultyLevel" value="low" checked="checked") 
+                    span Низкий
+                    input(class="difficultyLevel" type="radio" name="difficultyLevel" value="medium") 
+                    span Средний
+                    input(class="difficultyLevel" type="radio" name="difficultyLevel" value="hard") 
+                    spat Высокий
+                    .button
+                        span Start game
+            .cardsContainer(id="cards_container")            
                 +card("card0")
                 +card("card1")
                 +card("card2")
@@ -33,7 +42,7 @@ html(lang="ru")
                 +card("card9")
                 +card("card10")
                 +card("card11")
-            .timer_wrapper 01:00 
+            .timerWrapper 01:00 
         footer
 
         script(src="./src/script.js") 
