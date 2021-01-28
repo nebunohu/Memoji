@@ -1,0 +1,11 @@
+.modalWindow__popupWindow {
+    display: none;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    min-width: 350px;
+    width: max-content;
+    height: fit-content;
+    background-color: rgb(255,255,255);
+}

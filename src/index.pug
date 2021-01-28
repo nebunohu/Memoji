@@ -12,7 +12,7 @@ html(lang="ru")
         
         main
             .modalWindow(class="visible")
-                .popupWindow(class="afterGame")
+                .modalWindow__popupWindow(class="afterGame")
                     .popupText
                         span(class="letter1") L
                         span(class="letter2") o
@@ -20,7 +20,7 @@ html(lang="ru")
                         span(class="letter4") e
                     .button
                         span Try again
-                .popupWindow(class="beforeGame visible")
+                .modalWindow__popupWindow(class="beforeGame visible")
                     input(class="difficultyLevel" type="radio" name="difficultyLevel" value="low" checked="checked") 
                     span Низкий
                     input(class="difficultyLevel" type="radio" name="difficultyLevel" value="medium") 

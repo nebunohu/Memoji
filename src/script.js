@@ -1,4 +1,3 @@
-import { HotModuleReplacementPlugin } from 'webpack';
 import './style.scss';
 
 let MEMOJIAPP = MEMOJIAPP || {};
@@ -45,6 +44,7 @@ function startGameWindow() {
     popupWindow.addEventListener('click', function(event) {
         if (event.target.closest('.button'))
         {
+            putCardsOnTable();
             modalWindow.classList.remove('visible');
         }
     })
@@ -354,7 +354,7 @@ function compareCards() {
     MEMOJIAPP.namespace('resultTable.score');
 
     startGameWindow();
-    putCardsOnTable();
+    
     rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
 })();
