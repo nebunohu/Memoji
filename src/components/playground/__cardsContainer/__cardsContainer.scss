@@ -1,0 +1,9 @@
+.playground__cardsContainer {
+    display: flex;
+    max-width: 595px;
+    margin: 0 auto;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    justify-content: space-between;
+    
+}

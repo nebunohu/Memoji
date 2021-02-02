@@ -1,0 +1,26 @@
+.menuBlock__list {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    z-index: 5;
+    //opacity: 0;
+    display: none;
+    background-color: #cfd0cf;
+    border: 1px solid black;
+    height: 100px;
+    width: 150px;
+    font: bold 15px Arial, Helvetica, sans-serif;
+
+}
+
+.menuBlock__list ul {
+    margin: 0;
+}
+
+.menuBlock__list li {
+    list-style-type: none;
+}
+
+.menuBlock__burgerButton:hover ~ .menuBlock__list {
+    display: flex;
+}

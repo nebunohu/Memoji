@@ -1,9 +1,18 @@
+-
+    /* options {
+            block - класс модуля, к которому принадлежит mixin
+            cardId - идентификатор карты
+        }
+    */
 
-
-mixin card(cardId)
-
-    .card(id=cardId)
-        .flipper
-            .card_wrapper_front
-            .card_wrapper_back
+mixin card(options)
+    -
+        let blockClass = "card";
+        if(options.block) {
+            blockClass += " " + options.block +"__card";
+        }
+    div(class = blockClass, id=options.cardId)
+        .card__flipper
+            .card__wrapperFront
+            .card__wrapperback
                         

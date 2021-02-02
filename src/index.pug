@@ -11,16 +11,16 @@ html(lang="ru")
             span Memoji
         
         main
-            .modalWindow(class="visible")
+            .modalWindow
                 .modalWindow__popupWindow(class="afterGame")
                     .popupText
-                        span(class="letter1") L
-                        span(class="letter2") o
-                        span(class="letter3") s
-                        span(class="letter4") e
+                        span(class="letter" id="l1") L
+                        span(class="letter" id="l2") o
+                        span(class="letter" id="l3") s
+                        span(class="letter" id="l4") e
                     .button
                         span Try again
-                .modalWindow__popupWindow(class="beforeGame visible")
+                //.modalWindow__popupWindow(class="beforeGame visible")
                     input(class="difficultyLevel" type="radio" name="difficultyLevel" value="low" checked="checked") 
                     span Низкий
                     input(class="difficultyLevel" type="radio" name="difficultyLevel" value="medium") 
@@ -29,20 +29,31 @@ html(lang="ru")
                     spat Высокий
                     .button
                         span Start game
-            .cardsContainer(id="cards_container")            
-                +card("card0")
-                +card("card1")
-                +card("card2")
-                +card("card3")
-                +card("card4")
-                +card("card5")
-                +card("card6")
-                +card("card7")
-                +card("card8")
-                +card("card9")
-                +card("card10")
-                +card("card11")
-            .timerWrapper 01:00 
+            .menuBlock
+                .menuBlock__burgerButton
+                    .menuBlock__menuButtonBar
+                    .menuBlock__menuButtonBar
+                    .menuBlock__menuButtonBar
+                .menuBlock__list
+                    ul
+                        li Новая игра
+                        li Уровень сложности
+                        li Таблица рекордов
+            .playground
+                .playground__cardsContainer(id="cards_container")            
+                    +card({block: "playground", cardId: "card0"})
+                    +card({block: "playground", cardId: "card1"})
+                    +card({block: "playground", cardId: "card2"})
+                    +card({block: "playground", cardId: "card3"})
+                    +card({block: "playground", cardId: "card4"})
+                    +card({block: "playground", cardId: "card5"})
+                    +card({block: "playground", cardId: "card6"})
+                    +card({block: "playground", cardId: "card7"})
+                    +card({block: "playground", cardId: "card8"})
+                    +card({block: "playground", cardId: "card9"})
+                    +card({block: "playground", cardId: "card10"})
+                    +card({block: "playground", cardId: "card11"})
+                .playground__timerWrapper 01:00 
         footer
 
         script(src="./src/script.js") 

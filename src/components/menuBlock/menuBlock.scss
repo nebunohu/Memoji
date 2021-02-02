@@ -1,0 +1,11 @@
+@import "./__burgerButton/__burgerButton";
+@import "./__menuButtonBar/__menuButtonBar";
+@import "./__list/__list";
+
+.menuBlock {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    height: 100px;
+}

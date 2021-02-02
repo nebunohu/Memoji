@@ -1,0 +1,9 @@
+@import "./__cardsContainer/__cardsContainer";
+@import "./__timerWrapper/__timerWrapper";
+
+.playground {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
