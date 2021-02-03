@@ -61,9 +61,9 @@ function rotate() {
     cardsContainer.addEventListener('click', function(event) {
         let currentFlipper = null,
             i;
-        if(event.target.closest('.flipper'))
+        if(event.target.closest('.card__flipper'))
         {
-            currentFlipper = event.target.closest('.flipper');
+            currentFlipper = event.target.closest('.card__flipper');
             if(firstClick)
             {
                 firstClick = 0;
@@ -132,7 +132,7 @@ function putCardsOnTable() {
 
 function putNewCards() {
     let emojis,
-        imgsArray = Array.from(document.querySelectorAll('.image_wrapper'));
+        imgsArray = Array.from(document.querySelectorAll('.image_wrapper')),
         cards = MEMOJIAPP.cards;
 
     emojis = mixEmojis();
@@ -144,7 +144,7 @@ function putNewCards() {
 }
 
 function toDefault() {
-    let timerObj = document.querySelector('.timer_wrapper'),
+    let timerObj = document.querySelector('.playground__timerWrapper'),
         cards = MEMOJIAPP.cards,
         openedCards = MEMOJIAPP.openedCards,
         firstClick = MEMOJIAPP.flags.firstClick,
@@ -266,7 +266,7 @@ function lose() {
 }
 
 function decrTimer() {
-    let timerObj = document.querySelector('.timer_wrapper'),
+    let timerObj = document.querySelector('.playground__timerWrapper'),
         minutes, seconds,
         minutesStr, secondsStr,
         timer = MEMOJIAPP.timer.counter;
@@ -334,6 +334,7 @@ function compareCards() {
 function menuControl() {
     let menuList = document.querySelector(".menuBlock__list");
     let htmlDocument = document.querySelector("html");
+    let timerId = MEMOJIAPP.timer.timerId;
 
     htmlDocument.addEventListener('click', function(event) {
         if(event.target.closest('.menuBlock__burgerButton')) {
@@ -342,7 +343,8 @@ function menuControl() {
 
         } else if (MEMOJIAPP.flags.menuOpened) {
             if(event.target.closest('#newGame')) {
-                
+                toDefault();
+                clearInterval(timerId);
         
             } else if (event.target.closest('#difficulty')) {
 
@@ -365,11 +367,11 @@ function menuControl() {
     MEMOJIAPP.namespace('cards'); // Массив всех карточек на игровом поле
     MEMOJIAPP.cards = [];
     MEMOJIAPP.namespace('backs'); // Массив всех задников на игровом поле
-    MEMOJIAPP.backs = Array.from(document.querySelectorAll('.card_wrapper_back'));
+    MEMOJIAPP.backs = Array.from(document.querySelectorAll('.card__wrapperBack'));
     MEMOJIAPP.namespace('flippers'); // Массив всех поворачивающихся элементов карт
-    MEMOJIAPP.flippers = Array.from(document.querySelectorAll('.flipper'));
+    MEMOJIAPP.flippers = Array.from(document.querySelectorAll('.card__flipper'));
     MEMOJIAPP.namespace('cardsContainer'); // контейнер для карт на игровом поле
-    MEMOJIAPP.cardsContainer = document.querySelector('.cardsContainer');
+    MEMOJIAPP.cardsContainer = document.querySelector('.playground__cardsContainer');
     MEMOJIAPP.namespace('openedCards'); // перевернутые карты
     MEMOJIAPP.openedCards = [];
     MEMOJIAPP.namespace('flags.firstClick'); // флаг начала игры
@@ -386,7 +388,8 @@ function menuControl() {
     MEMOJIAPP.namespace('resultTable.score');
 
     menuControl();
-    startGameWindow(); 
+    //startGameWindow(); 
+    putCardsOnTable();
     rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
 })();
