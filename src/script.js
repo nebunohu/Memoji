@@ -331,6 +331,36 @@ function compareCards() {
     
 }
 
+function menuControl() {
+    let menuList = document.querySelector(".menuBlock__list");
+    let htmlDocument = document.querySelector("html");
+
+    htmlDocument.addEventListener('click', function(event) {
+        if(event.target.closest('.menuBlock__burgerButton')) {
+            MEMOJIAPP.flags.menuOpened = 1;
+            menuList.classList.add('visible');
+
+        } else if (MEMOJIAPP.flags.menuOpened) {
+            if(event.target.closest('#newGame')) {
+                
+        
+            } else if (event.target.closest('#difficulty')) {
+
+     
+            } else if (event.target.closest('#recordsTable')) {
+
+               
+            } 
+
+            MEMOJIAPP.flags.menuOpened = 0;
+            menuList.classList.remove('visible');
+            
+                
+        }
+            
+    });
+}
+
 (function startGame(){
     MEMOJIAPP.namespace('cards'); // Массив всех карточек на игровом поле
     MEMOJIAPP.cards = [];
@@ -344,6 +374,8 @@ function compareCards() {
     MEMOJIAPP.openedCards = [];
     MEMOJIAPP.namespace('flags.firstClick'); // флаг начала игры
     MEMOJIAPP.flags.firstClick = 1;
+    MEMOJIAPP.namespace('flags.menuOpened'); // флаг открытия меню игры
+    MEMOJIAPP.flags.menuOpened = 0;
     MEMOJIAPP.namespace('timer.counter'); // счетчик игрового таймера 
     MEMOJIAPP.timer.counter = 60;
     MEMOJIAPP.namespace('timer.id'); // идентификатор игрового таймера
@@ -353,8 +385,8 @@ function compareCards() {
     MEMOJIAPP.namespace('resultTable.playerName');
     MEMOJIAPP.namespace('resultTable.score');
 
-    startGameWindow();
-    
+    menuControl();
+    startGameWindow(); 
     rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
 })();

@@ -5,6 +5,10 @@
     z-index: 5;
     //opacity: 0;
     display: none;
+    margin: 0;
+    padding: 0 5px;
+    flex-flow: column wrap;
+    justify-content: space-around;
     background-color: #cfd0cf;
     border: 1px solid black;
     height: 100px;
@@ -13,14 +17,16 @@
 
 }
 
-.menuBlock__list ul {
-    margin: 0;
-}
-
 .menuBlock__list li {
     list-style-type: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
 }
 
-.menuBlock__burgerButton:hover ~ .menuBlock__list {
+/*.menuBlock__burgerButton:hover ~ .menuBlock__list {
     display: flex;
-}
+    flex-flow: column;
+    margin: 0;
+}*/
+

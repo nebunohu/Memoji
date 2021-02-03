@@ -34,11 +34,10 @@ html(lang="ru")
                     .menuBlock__menuButtonBar
                     .menuBlock__menuButtonBar
                     .menuBlock__menuButtonBar
-                .menuBlock__list
-                    ul
-                        li Новая игра
-                        li Уровень сложности
-                        li Таблица рекордов
+                ul(class="menuBlock__list")
+                    li(class="menuBlock__listItem" id="newGame") Новая игра
+                    li(class="menuBlock__listItem" id="difficulty") Уровень сложности
+                    li(class="menuBlock__listItem" id="recordsTadle") Таблица рекордов
             .playground
                 .playground__cardsContainer(id="cards_container")            
                     +card({block: "playground", cardId: "card0"})
