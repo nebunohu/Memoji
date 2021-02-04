@@ -1,3 +1,4 @@
+"use strict"
 import './style.scss';
 
 let MEMOJIAPP = MEMOJIAPP || {};
@@ -55,19 +56,20 @@ function rotate() {
         cardsContainer = MEMOJIAPP.cardsContainer,
         firstClick = MEMOJIAPP.flags.firstClick,
         cards = MEMOJIAPP.cards,
-        openedCards = MEMOJIAPP.openedCards,
-        timerId = MEMOJIAPP.timer.id;
+        openedCards = MEMOJIAPP.openedCards;
+        
 
     cardsContainer.addEventListener('click', function(event) {
         let currentFlipper = null,
+            timerId = MEMOJIAPP.timer.id,
             i;
         if(event.target.closest('.card__flipper'))
         {
             currentFlipper = event.target.closest('.card__flipper');
-            if(firstClick)
+            if(MEMOJIAPP.flags.firstClick)
             {
-                firstClick = 0;
-                timerId = window.setInterval(() => decrTimer(),1000);
+                MEMOJIAPP.flags.firstClick = 0;
+                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
             }
         
             // сохранение индекса текущего элемента
@@ -158,19 +160,23 @@ function toDefault() {
         cards[i].back.classList.remove('incorrect');
     }
     openedCards.splice(0, openedCards.length);
-    firstClick = 1;
-    timer = 60;
+    MEMOJIAPP.flags.firstClick = 1;
+    MEMOJIAPP.timer.counter = 60;
     timerObj.textContent = '01:00';
+    MEMOJIAPP.flags.lose = 0;
+    MEMOJIAPP.flags.win = 0;
     putNewCards();
 
 }
 function endGame() {
-    let popupButton = document.querySelector(".popup_window .button"),
-        modalWindow = document.querySelector(".modal_window"),
+    let popupButton = document.querySelector('.afterGame .button'),
+        popupWindow = document.querySelector('.afterGame'),
+        modalWindow = document.querySelector('.modalWindow'),
         timerId = MEMOJIAPP.timer.id;
 
     modalWindow.classList.add('visible');
-    clearInterval(timerId);
+    popupWindow.classList.add('visible');
+    clearInterval(MEMOJIAPP.timer.id);
     //newGame();
     popupButton.addEventListener("mousedown", function() {
         if(this === popupButton)
@@ -180,9 +186,10 @@ function endGame() {
             popupButton.addEventListener("mouseup", function() {
                     popupButton.classList.remove('pressed');
                     modalWindow.classList.remove('visible');
+                    popupWindow.classList.remove('visible');
                     toDefault();
             }, true);
-            clearInterval(timerId);
+            clearInterval(MEMOJIAPP.timer.id);
         }
     }, true)
     
@@ -191,9 +198,9 @@ function endGame() {
 function win() {
     let letter,
         win = 1,
-        firstLetter = document.querySelector(".popup_text span"),
+        firstLetter = document.querySelector(".popupText span"),
         deleteLetter,
-        popupText = document.querySelector(".popup_text"),
+        popupText = document.querySelector(".popupText"),
         cards = MEMOJIAPP.cards,
         i;
 
@@ -202,7 +209,7 @@ function win() {
     {
         for(i = 0; i < 4; i++)
         {
-            deleteLetter = document.querySelector(".popup_text span");
+            deleteLetter = document.querySelector(".popupText span");
             popupText.removeChild(deleteLetter);
         }
 
@@ -226,21 +233,22 @@ function win() {
     }
     if(win)
     {
+        MEMOJIAPP.flags.win = 1;
         endGame();
     } 
 
 }
 
 function lose() {
-    let firstLetter = document.querySelector(".popup_text span"),
-        popupText = document.querySelector(".popup_text"),
+    let firstLetter = document.querySelector(".popupText span"),
+        popupText = document.querySelector(".popupText"),
         letter, deleteLetter, i;
 
     if(firstLetter.textContent === 'W')
     {
         for(i = 0; i < 3; i++)
         {
-            deleteLetter = document.querySelector(".popup_text span");
+            deleteLetter = document.querySelector(".popupText span");
             popupText.removeChild(deleteLetter);
         }
 
@@ -266,22 +274,23 @@ function lose() {
 }
 
 function decrTimer() {
-    let timerObj = document.querySelector('.playground__timerWrapper'),
+    let timerWrapper = document.querySelector('.playground__timerWrapper'),
         minutes, seconds,
-        minutesStr, secondsStr,
-        timer = MEMOJIAPP.timer.counter;
-    timer--;
-    minutes = Math.floor(timer / 60);
+        minutesStr, secondsStr,     // Значения минут и секунд записанные строкой 
+        timer = MEMOJIAPP.timer.counter,
+        timerId = MEMOJIAPP.timer.id;
+    MEMOJIAPP.timer.counter--;
+    minutes = Math.floor(MEMOJIAPP.timer.counter / 60);
     minutesStr = minutes.toString();
     if(minutes < 10) minutesStr = '0'+ minutesStr;
-    seconds = timer % 60;
+    seconds = MEMOJIAPP.timer.counter % 60;
     secondsStr =seconds.toString();
     if(seconds < 10) secondsStr = '0'+ secondsStr;
-    timerObj.textContent = minutesStr+':'+secondsStr;
+    timerWrapper.textContent = minutesStr+':'+secondsStr;
 
-   if(!timer)
+   if(!MEMOJIAPP.timer.counter)
    {
-       clearInterval(timerId);
+       clearInterval(MEMOJIAPP.timer.id);
        lose();
    }
 }
@@ -332,35 +341,65 @@ function compareCards() {
 }
 
 function menuControl() {
-    let menuList = document.querySelector(".menuBlock__list");
-    let htmlDocument = document.querySelector("html");
-    let timerId = MEMOJIAPP.timer.timerId;
+    let menuList = document.querySelector(".menuBlock__list"),
+        modalWindow = document.querySelector(".modalWindow"),
+        pauseWindow = document.querySelector(".pauseWindow"),
+        difficultyWindow = document.querySelector(".difficultyWindow"),
+        htmlDocument = document.querySelector("html"),
+        timerId = MEMOJIAPP.timer.id;
 
+    
     htmlDocument.addEventListener('click', function(event) {
-        if(event.target.closest('.menuBlock__burgerButton')) {
-            MEMOJIAPP.flags.menuOpened = 1;
-            menuList.classList.add('visible');
+        if(!(MEMOJIAPP.flags.win || MEMOJIAPP.flags.lose)) {
+            if(event.target.closest('.menuBlock__burgerButton')) {
+                MEMOJIAPP.flags.menuOpened = 1;
+                menuList.classList.add('visible');
 
-        } else if (MEMOJIAPP.flags.menuOpened) {
-            if(event.target.closest('#newGame')) {
-                toDefault();
-                clearInterval(timerId);
-        
-            } else if (event.target.closest('#difficulty')) {
-
-     
-            } else if (event.target.closest('#recordsTable')) {
-
-               
-            } 
-
-            MEMOJIAPP.flags.menuOpened = 0;
-            menuList.classList.remove('visible');
+            } else if (MEMOJIAPP.flags.menuOpened) {
+                if(event.target.closest('#newGame')) {
+                    toDefault();
+                    clearInterval(MEMOJIAPP.timer.id);
             
+                } else if (event.target.closest('#difficulty')) {
+                    MEMOJIAPP.flags.difficultyWindowOpened = 1;
+                    modalWindow.classList.add('visible');
+                    difficultyWindow.classList.add('visible');
+
+                } else if (event.target.closest('#recordsTable')) {
+                    MEMOJIAPP.flags.recordsTableOpened = 1;
+                    
+                } 
+
+                MEMOJIAPP.flags.menuOpened = 0;
+                menuList.classList.remove('visible');
                 
+            } else if(event.target.closest('.menuBlock__pauseButton')) {   
+                MEMOJIAPP.flags.pause = 1;
+                modalWindow.classList.add('visible');
+                pauseWindow.classList.add('visible');
+                clearInterval(MEMOJIAPP.timer.id);
+
+            } else if(event.target.closest('.pauseWindow .button')) {
+                MEMOJIAPP.flags.pause = 0;
+                modalWindow.classList.remove('visible');
+                pauseWindow.classList.remove('visible');
+                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+            } else {
+                if(!event.target.closest('.modalWindow__popupWindow')) {
+                    MEMOJIAPP.flags.difficultyWindowOpened = 0;
+                    if(!MEMOJIAPP.flags.pause) {
+                        modalWindow.classList.remove('visible');
+                    }
+                    difficultyWindow.classList.remove('visible');
+                }
+                
+            }
+
         }
             
-    });
+    }, true);
+    
+   
 }
 
 (function startGame(){
@@ -378,6 +417,16 @@ function menuControl() {
     MEMOJIAPP.flags.firstClick = 1;
     MEMOJIAPP.namespace('flags.menuOpened'); // флаг открытия меню игры
     MEMOJIAPP.flags.menuOpened = 0;
+    MEMOJIAPP.namespace('flags.difficultyWindowOpened'); // флаг открытия меню игры
+    MEMOJIAPP.flags.difficultyWindowOpened = 0;
+    MEMOJIAPP.namespace('flags.recordsTableOpened'); // флаг открытия меню игры
+    MEMOJIAPP.flags.recordsTableOpened = 0;
+    MEMOJIAPP.namespace('flags.pause'); // флаг паузы игры
+    MEMOJIAPP.flags.pause = 0;
+    MEMOJIAPP.namespace('flags.win'); // флаг победы в игре
+    MEMOJIAPP.flags.win = 0;
+    MEMOJIAPP.namespace('flags.lose'); // флаг поражения в игре
+    MEMOJIAPP.flags.lose = 0;
     MEMOJIAPP.namespace('timer.counter'); // счетчик игрового таймера 
     MEMOJIAPP.timer.counter = 60;
     MEMOJIAPP.namespace('timer.id'); // идентификатор игрового таймера

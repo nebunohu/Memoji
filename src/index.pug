@@ -29,11 +29,31 @@ html(lang="ru")
                     spat Высокий
                     .button
                         span Start game
+                .modalWindow__popupWindow(class="difficultyWindow")
+                    ul
+                        li
+                            input(class="difficultyLevel" type="radio" name="difficultyLevel" value="low" checked="checked") 
+                            span Низкий
+                        li
+                            input(class="difficultyLevel" type="radio" name="difficultyLevel" value="medium") 
+                            span Средний
+                        li
+                            input(class="difficultyLevel" type="radio" name="difficultyLevel" value="hard") 
+                            span Высокий
+                    .button
+                        span Start game
+                .modalWindow__popupWindow(class="pauseWindow")
+                    span Pause
+                    .button
+                        span Continue
             .menuBlock
                 .menuBlock__burgerButton
                     .menuBlock__menuButtonBar
                     .menuBlock__menuButtonBar
                     .menuBlock__menuButtonBar
+                .menuBlock__pauseButton
+                    .menuBlock__pauseButtonBar
+                    .menuBlock__pauseButtonBar
                 ul(class="menuBlock__list")
                     li(class="menuBlock__listItem" id="newGame") Новая игра
                     li(class="menuBlock__listItem" id="difficulty") Уровень сложности

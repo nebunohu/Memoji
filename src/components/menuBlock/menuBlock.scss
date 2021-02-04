@@ -1,11 +1,13 @@
 @import "./__burgerButton/__burgerButton";
 @import "./__menuButtonBar/__menuButtonBar";
+@import "./__pauseButton/__pauseButton";
+@import "./__pauseButtonBar/__pauseButtonBar";
 @import "./__list/__list";
 
 .menuBlock {
     position: relative;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column wrap;
     align-items: flex-start;
     height: 100px;
 }

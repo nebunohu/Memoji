@@ -1,0 +1,20 @@
+.button {
+    display: flex;
+    align-items: center;
+    margin: 40px 0 30px 0;
+    height: 40px;
+    font: bold 20px Arial, Helvetica, sans-serif;
+    color: #fff;
+    padding: 0 20px;
+    background-image: linear-gradient(to left, #22ab93, #19668d);
+    box-shadow: 1px 1px 1px rgb(0,0,0);
+    cursor: pointer;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
+
+.pressed {
+    box-shadow: inset 2px 1px 8px rgb(0,0,0);
+}
