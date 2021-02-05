@@ -435,6 +435,7 @@ function menuControl() {
     MEMOJIAPP.difficultyLevel = 0;
     MEMOJIAPP.namespace('resultTable.playerName');
     MEMOJIAPP.namespace('resultTable.score');
+    console.log('variables were set!');
 
     menuControl();
     //startGameWindow(); 
