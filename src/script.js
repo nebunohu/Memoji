@@ -1,7 +1,8 @@
 "use strict"
 import './style.scss';
 
-let MEMOJIAPP = MEMOJIAPP || {};
+//let MEMOJIAPP = MEMOJIAPP || {};
+let MEMOJIAPP = {};
 
 MEMOJIAPP.namespace = function(propsString) {
     let parent = MEMOJIAPP,
@@ -39,7 +40,7 @@ class Card {
 
 function startGameWindow() {
     let popupWindow = document.querySelector('.modalWindow .beforeGame'),
-        modalWindow = document.querySelector('.modalWindow');
+        modalWindow = document.querySelector('.modalWindow'),
         i = 0;
 
     popupWindow.addEventListener('click', function(event) {
@@ -402,6 +403,35 @@ function menuControl() {
    
 }
 
+function clickControl() {
+    let menuList = document.querySelector(".menuBlock__list"),
+        modalWindow = document.querySelector(".modalWindow"),
+        pauseWindow = document.querySelector(".pauseWindow"),
+        difficultyWindow = document.querySelector(".difficultyWindow"),
+        htmlDocument = document.querySelector("html"),
+        timerId = MEMOJIAPP.timer.id;
+
+    
+    htmlDocument.addEventListener('click', function(event) {
+        if(event.target.closest('.playground__cardsContainer')) {
+
+        } else if(event.target.closest('.menuBlock')) {
+            if(event.target.closest('.menuBlock__pauseButton')) {
+                MEMOJIAPP.flags.pause = 1;
+                modalWindow.classList.add('visible');
+                pauseWindow.classList.add('visible');
+                clearInterval(MEMOJIAPP.timer.id);
+            } else if(event.target.closest('.menuBlock__burgerButton')) {
+                MEMOJIAPP.flags.menuOpened = 1;
+                menuList.classList.add('visible');
+
+            } 
+        } else if(event.target.closest('.modalWindow')) {
+
+        }
+    }, true);
+}
+
 (function startGame(){
     MEMOJIAPP.namespace('cards'); // Массив всех карточек на игровом поле
     MEMOJIAPP.cards = [];
@@ -435,11 +465,11 @@ function menuControl() {
     MEMOJIAPP.difficultyLevel = 0;
     MEMOJIAPP.namespace('resultTable.playerName');
     MEMOJIAPP.namespace('resultTable.score');
-    console.log('variables were set!');
 
-    menuControl();
+    //menuControl();
     //startGameWindow(); 
     putCardsOnTable();
-    rotate();
+    clickControl();
+    //rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
 })();
