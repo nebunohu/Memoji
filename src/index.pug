@@ -33,19 +33,23 @@ html(lang="ru")
                     ul
                         li
                             input(class="difficultyLevel" type="radio" name="difficultyLevel" value="low" checked="checked") 
-                            span Низкий
+                            span Low
                         li
                             input(class="difficultyLevel" type="radio" name="difficultyLevel" value="medium") 
-                            span Средний
+                            span Medium
                         li
                             input(class="difficultyLevel" type="radio" name="difficultyLevel" value="hard") 
-                            span Высокий
+                            span High
                     .button
                         span Start game
                 .modalWindow__popupWindow(class="pauseWindow")
                     span Pause
                     .button
                         span Continue
+                .modalWindow__popupWindow(class="recordsWindow")
+                    span Records table
+                    .button
+                        span Back
             .menuBlock
                 .menuBlock__burgerButton
                     .menuBlock__menuButtonBar
@@ -57,7 +61,7 @@ html(lang="ru")
                 ul(class="menuBlock__list")
                     li(class="menuBlock__listItem" id="newGame") Новая игра
                     li(class="menuBlock__listItem" id="difficulty") Уровень сложности
-                    li(class="menuBlock__listItem" id="recordsTadle") Таблица рекордов
+                    li(class="menuBlock__listItem" id="recordsTable") Таблица рекордов
             .playground
                 .playground__cardsContainer(id="cards_container")            
                     +card({block: "playground", cardId: "card0"})

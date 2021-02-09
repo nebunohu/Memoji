@@ -52,7 +52,7 @@ function startGameWindow() {
     })
 }
 
-function rotate() {
+function rotate(event) {
     let currentCard = null,
         cardsContainer = MEMOJIAPP.cardsContainer,
         firstClick = MEMOJIAPP.flags.firstClick,
@@ -60,7 +60,7 @@ function rotate() {
         openedCards = MEMOJIAPP.openedCards;
         
 
-    cardsContainer.addEventListener('click', function(event) {
+    //cardsContainer.addEventListener('click', function(event) {
         let currentFlipper = null,
             timerId = MEMOJIAPP.timer.id,
             i;
@@ -94,7 +94,7 @@ function rotate() {
             }
         }
         if(openedCards.length > 1) compareCards();
-        }, false);
+    //    }, false);
 }
 
 /* 
@@ -341,22 +341,31 @@ function compareCards() {
     
 }
 
-function menuControl() {
+function clickControl() {
     let menuList = document.querySelector(".menuBlock__list"),
         modalWindow = document.querySelector(".modalWindow"),
         pauseWindow = document.querySelector(".pauseWindow"),
         difficultyWindow = document.querySelector(".difficultyWindow"),
+        recordsWindow = document.querySelector(".recordsWindow"),
         htmlDocument = document.querySelector("html"),
         timerId = MEMOJIAPP.timer.id;
 
     
     htmlDocument.addEventListener('click', function(event) {
-        if(!(MEMOJIAPP.flags.win || MEMOJIAPP.flags.lose)) {
-            if(event.target.closest('.menuBlock__burgerButton')) {
+        if(event.target.closest('.playground__cardsContainer')) {
+            rotate(event);
+        } else if(event.target.closest('.menuBlock')) {
+            if(event.target.closest('.menuBlock__pauseButton')) {
+                MEMOJIAPP.flags.pause = 1;
+                modalWindow.classList.add('visible');
+                pauseWindow.classList.add('visible');
+                clearInterval(MEMOJIAPP.timer.id);
+
+            } else if(event.target.closest('.menuBlock__burgerButton')) {
                 MEMOJIAPP.flags.menuOpened = 1;
                 menuList.classList.add('visible');
 
-            } else if (MEMOJIAPP.flags.menuOpened) {
+            } else if(MEMOJIAPP.flags.menuOpened) {
                 if(event.target.closest('#newGame')) {
                     toDefault();
                     clearInterval(MEMOJIAPP.timer.id);
@@ -368,67 +377,36 @@ function menuControl() {
 
                 } else if (event.target.closest('#recordsTable')) {
                     MEMOJIAPP.flags.recordsTableOpened = 1;
-                    
+                    modalWindow.classList.add('visible');
+                    recordsWindow.classList.add('visible');
                 } 
 
                 MEMOJIAPP.flags.menuOpened = 0;
                 menuList.classList.remove('visible');
                 
-            } else if(event.target.closest('.menuBlock__pauseButton')) {   
-                MEMOJIAPP.flags.pause = 1;
-                modalWindow.classList.add('visible');
-                pauseWindow.classList.add('visible');
-                clearInterval(MEMOJIAPP.timer.id);
-
-            } else if(event.target.closest('.pauseWindow .button')) {
-                MEMOJIAPP.flags.pause = 0;
-                modalWindow.classList.remove('visible');
-                pauseWindow.classList.remove('visible');
-                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
-            } else {
-                if(!event.target.closest('.modalWindow__popupWindow')) {
-                    MEMOJIAPP.flags.difficultyWindowOpened = 0;
-                    if(!MEMOJIAPP.flags.pause) {
-                        modalWindow.classList.remove('visible');
-                    }
-                    difficultyWindow.classList.remove('visible');
-                }
-                
             }
 
-        }
+
+        } else if(event.target.closest('.pauseWindow .button')) {
+            MEMOJIAPP.flags.pause = 0;
+            modalWindow.classList.remove('visible');
+            pauseWindow.classList.remove('visible');
+            MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+
+
+        } else if(!event.target.closest('.modalWindow__popupWindow')) {
+            MEMOJIAPP.flags.difficultyWindowOpened = 0;
+            difficultyWindow.classList.remove('visible');
+
+            MEMOJIAPP.flags.recordsTableWindowOpened = 0;
+            recordsWindow.classList.remove('visible');
+
+            if(!MEMOJIAPP.flags.pause) {
+                modalWindow.classList.remove('visible');
+            }
             
-    }, true);
-    
-   
-}
 
-function clickControl() {
-    let menuList = document.querySelector(".menuBlock__list"),
-        modalWindow = document.querySelector(".modalWindow"),
-        pauseWindow = document.querySelector(".pauseWindow"),
-        difficultyWindow = document.querySelector(".difficultyWindow"),
-        htmlDocument = document.querySelector("html"),
-        timerId = MEMOJIAPP.timer.id;
-
-    
-    htmlDocument.addEventListener('click', function(event) {
-        if(event.target.closest('.playground__cardsContainer')) {
-
-        } else if(event.target.closest('.menuBlock')) {
-            if(event.target.closest('.menuBlock__pauseButton')) {
-                MEMOJIAPP.flags.pause = 1;
-                modalWindow.classList.add('visible');
-                pauseWindow.classList.add('visible');
-                clearInterval(MEMOJIAPP.timer.id);
-            } else if(event.target.closest('.menuBlock__burgerButton')) {
-                MEMOJIAPP.flags.menuOpened = 1;
-                menuList.classList.add('visible');
-
-            } 
-        } else if(event.target.closest('.modalWindow')) {
-
-        }
+        } 
     }, true);
 }
 
