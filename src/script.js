@@ -169,6 +169,7 @@ function toDefault() {
     putNewCards();
 
 }
+
 function endGame() {
     let popupButton = document.querySelector('.afterGame .button'),
         popupWindow = document.querySelector('.afterGame'),
@@ -196,37 +197,35 @@ function endGame() {
     
 }
 
-function win() {
-    let letter,
-        win = 1,
-        firstLetter = document.querySelector(".popupText span"),
-        deleteLetter,
+function gameEndingTextOunput(text) {
+    let letters,
+        letterSpan,
+        deletingText = document.querySelectorAll('.popupText span'),
         popupText = document.querySelector(".popupText"),
+        i;
+
+    for(i = 0; i < deletingText.length; i++) {
+        popupText.removeChild(deletingText[i]);
+    }
+
+    letters = text.split('.');
+
+    for(i = 0; i < letters.length; i++) {
+        letterSpan = document.createElement('span')
+        letterSpan.textContent = letters[i];
+        letterSpan.classList.add('letter'+(i+1));
+        popupText.appendChild(letterSpan);
+    }
+    i=0;
+    
+}
+
+function win() {
+    let win = 1,        
         cards = MEMOJIAPP.cards,
         i;
 
-
-    if(firstLetter.textContent === 'L')
-    {
-        for(i = 0; i < 4; i++)
-        {
-            deleteLetter = document.querySelector(".popupText span");
-            popupText.removeChild(deleteLetter);
-        }
-
-        letter = document.createElement('span')
-        letter.textContent ='W';
-        letter.classList.add('letter1');
-        popupText.appendChild(letter);
-        letter = document.createElement('span')
-        letter.textContent ='i';
-        letter.classList.add('letter2');
-        popupText.appendChild(letter);
-        letter = document.createElement('span')
-        letter.textContent = 'n';
-        letter.classList.add('letter3');
-        popupText.appendChild(letter);
-    }
+    gameEndingTextOunput('W.i.n');
 
     for(i = 0; i < cards.length; i++)
     {
@@ -241,35 +240,7 @@ function win() {
 }
 
 function lose() {
-    let firstLetter = document.querySelector(".popupText span"),
-        popupText = document.querySelector(".popupText"),
-        letter, deleteLetter, i;
-
-    if(firstLetter.textContent === 'W')
-    {
-        for(i = 0; i < 3; i++)
-        {
-            deleteLetter = document.querySelector(".popupText span");
-            popupText.removeChild(deleteLetter);
-        }
-
-        letter = document.createElement('span')
-        letter.textContent ='L';
-        letter.classList.add('letter1');
-        popupText.appendChild(letter);
-        letter = document.createElement('span')
-        letter.textContent ='o';
-        letter.classList.add('letter2');
-        popupText.appendChild(letter);
-        letter = document.createElement('span')
-        letter.textContent = 's';
-        letter.classList.add('letter3');
-        popupText.appendChild(letter);
-        letter = document.createElement('span')
-        letter.textContent = 'e';
-        letter.classList.add('letter4');
-        popupText.appendChild(letter);
-    }
+    gameEndingTextOunput('L.o.s.e');
     
     endGame();
 }
@@ -337,8 +308,6 @@ function compareCards() {
     }
     if(correct) win();
         
-
-    
 }
 
 function clickControl() {
