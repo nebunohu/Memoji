@@ -1,8 +1,7 @@
 "use strict"
 import './style.scss';
 
-//let MEMOJIAPP = MEMOJIAPP || {};
-let MEMOJIAPP = {};
+let MEMOJIAPP = MEMOJIAPP || {};
 
 MEMOJIAPP.namespace = function(propsString) {
     let parent = MEMOJIAPP,
@@ -38,63 +37,46 @@ class Card {
     }
 }
 
-function startGameWindow() {
-    let popupWindow = document.querySelector('.modalWindow .beforeGame'),
-        modalWindow = document.querySelector('.modalWindow'),
-        i = 0;
-
-    popupWindow.addEventListener('click', function(event) {
-        if (event.target.closest('.button'))
-        {
-            putCardsOnTable();
-            modalWindow.classList.remove('visible');
-        }
-    })
-}
-
 function rotate(event) {
     let currentCard = null,
         cardsContainer = MEMOJIAPP.cardsContainer,
         firstClick = MEMOJIAPP.flags.firstClick,
         cards = MEMOJIAPP.cards,
-        openedCards = MEMOJIAPP.openedCards;
-        
-
-    //cardsContainer.addEventListener('click', function(event) {
-        let currentFlipper = null,
-            timerId = MEMOJIAPP.timer.id,
-            i;
-        if(event.target.closest('.card__flipper'))
+        openedCards = MEMOJIAPP.openedCards,
+        currentFlipper = null,
+        timerId = MEMOJIAPP.timer.id,
+        i;
+    if(event.target.closest('.card__flipper'))
+    {
+        currentFlipper = event.target.closest('.card__flipper');
+        if(MEMOJIAPP.flags.firstClick)
         {
-            currentFlipper = event.target.closest('.card__flipper');
-            if(MEMOJIAPP.flags.firstClick)
+            MEMOJIAPP.flags.firstClick = 0;
+            MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+        }
+    
+        // сохранение индекса текущего элемента
+        for(i = 0; i < cards.length;  i++)
+        {
+            if(cards[i].flipper === currentFlipper)
             {
-                MEMOJIAPP.flags.firstClick = 0;
-                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
-            }
-        
-            // сохранение индекса текущего элемента
-            for(i = 0; i < cards.length;  i++)
-            {
-                if(cards[i].flipper === currentFlipper)
-                {
-                    currentCard = cards[i];
-                }
-            }
-            // переворот карточки
-            if(!(currentCard.back.classList.contains('correct') || currentCard.back.classList.contains('incorrect')) && !currentCard.flipper.classList.contains('rotate'))
-            {
-                openedCards.push(currentCard);
-                currentCard.flipper.classList.add('rotate');
-            }
-            else if(!(currentCard.back.classList.contains('correct') || currentCard.back.classList.contains('incorrect')))
-            {
-                currentCard.flipper.classList.remove('rotate');
-                openedCards.splice(0,1);
+                currentCard = cards[i];
             }
         }
-        if(openedCards.length > 1) compareCards();
-    //    }, false);
+        // переворот карточки
+        if(!(currentCard.back.classList.contains('correct') || currentCard.back.classList.contains('incorrect')) && !currentCard.flipper.classList.contains('rotate'))
+        {
+            openedCards.push(currentCard);
+            currentCard.flipper.classList.add('rotate');
+        }
+        else if(!(currentCard.back.classList.contains('correct') || currentCard.back.classList.contains('incorrect')))
+        {
+            currentCard.flipper.classList.remove('rotate');
+            openedCards.splice(0,1);
+        }
+    }
+    if(openedCards.length > 1) compareCards();
+
 }
 
 /* 
@@ -171,30 +153,45 @@ function toDefault() {
 }
 
 function endGame() {
-    let popupButton = document.querySelector('.afterGame .button'),
-        popupWindow = document.querySelector('.afterGame'),
+    let popupWindow = document.querySelector('.afterGame'),
         modalWindow = document.querySelector('.modalWindow'),
         timerId = MEMOJIAPP.timer.id;
 
     modalWindow.classList.add('visible');
     popupWindow.classList.add('visible');
     clearInterval(MEMOJIAPP.timer.id);
-    //newGame();
-    popupButton.addEventListener("mousedown", function() {
-        if(this === popupButton)
-        {
-            //modalWindow.classList.remove('visible');
-            popupButton.classList.add('pressed');
-            popupButton.addEventListener("mouseup", function() {
-                    popupButton.classList.remove('pressed');
-                    modalWindow.classList.remove('visible');
-                    popupWindow.classList.remove('visible');
-                    toDefault();
-            }, true);
-            clearInterval(MEMOJIAPP.timer.id);
-        }
-    }, true)
     
+}
+
+function clickPopupButton() {
+    let popupButtons = document.querySelectorAll('.modalWindow__popupWindow .button'),
+        modalWindow = document.querySelector('.modalWindow');
+
+    modalWindow.addEventListener("mousedown", function(event) {
+        let button = event.target.closest('.modalWindow__popupWindow .button');
+        if(button === popupButtons[0] ||
+           button === popupButtons[1] ||
+           button === popupButtons[2] ||
+           button === popupButtons[3]) {
+
+            button.classList.add('pressed');
+        }
+        
+    }, true);
+    modalWindow.addEventListener("mouseup", function(event) {
+        let button = event.target.closest('.modalWindow__popupWindow .button'),
+            popupWindow = event.target.closest('.modalWindow__popupWindow');
+        if(button === popupButtons[0] ||
+           button === popupButtons[1] ||
+           button === popupButtons[2] ||
+           button === popupButtons[3])
+        {
+            button.classList.remove('pressed');
+            modalWindow.classList.remove('visible');
+            popupWindow.classList.remove('visible');
+            if(button === popupButtons[0]) toDefault();
+        }
+    }, true);
 }
 
 function gameEndingTextOunput(text) {
@@ -216,7 +213,6 @@ function gameEndingTextOunput(text) {
         letterSpan.classList.add('letter'+(i+1));
         popupText.appendChild(letterSpan);
     }
-    i=0;
     
 }
 
@@ -321,61 +317,61 @@ function clickControl() {
 
     
     htmlDocument.addEventListener('click', function(event) {
-        if(event.target.closest('.playground__cardsContainer')) {
-            rotate(event);
-        } else if(event.target.closest('.menuBlock')) {
-            if(event.target.closest('.menuBlock__pauseButton')) {
-                MEMOJIAPP.flags.pause = 1;
-                modalWindow.classList.add('visible');
-                pauseWindow.classList.add('visible');
+        if(MEMOJIAPP.flags.menuOpened) {
+            if(event.target.closest('#newGame')) {
+                toDefault();
                 clearInterval(MEMOJIAPP.timer.id);
+        
+            } else if (event.target.closest('#difficulty')) {
+                MEMOJIAPP.flags.difficultyWindowOpened = 1;
+                modalWindow.classList.add('visible');
+                difficultyWindow.classList.add('visible');
 
-            } else if(event.target.closest('.menuBlock__burgerButton')) {
-                MEMOJIAPP.flags.menuOpened = 1;
-                menuList.classList.add('visible');
+            } else if (event.target.closest('#recordsTable')) {
+                MEMOJIAPP.flags.recordsTableOpened = 1;
+                modalWindow.classList.add('visible');
+                recordsWindow.classList.add('visible');
+            } 
 
-            } else if(MEMOJIAPP.flags.menuOpened) {
-                if(event.target.closest('#newGame')) {
-                    toDefault();
+            MEMOJIAPP.flags.menuOpened = 0;
+            menuList.classList.remove('visible');
+        } else {
+            if(event.target.closest('.playground__cardsContainer')) {
+                rotate(event);
+            } else if(event.target.closest('.menuBlock')) {
+                if(event.target.closest('.menuBlock__pauseButton')) {
+                    MEMOJIAPP.flags.pause = 1;
+                    modalWindow.classList.add('visible');
+                    pauseWindow.classList.add('visible');
                     clearInterval(MEMOJIAPP.timer.id);
-            
-                } else if (event.target.closest('#difficulty')) {
-                    MEMOJIAPP.flags.difficultyWindowOpened = 1;
-                    modalWindow.classList.add('visible');
-                    difficultyWindow.classList.add('visible');
-
-                } else if (event.target.closest('#recordsTable')) {
-                    MEMOJIAPP.flags.recordsTableOpened = 1;
-                    modalWindow.classList.add('visible');
-                    recordsWindow.classList.add('visible');
+    
+                } else if(event.target.closest('.menuBlock__burgerButton')) {
+                    MEMOJIAPP.flags.menuOpened = 1;
+                    menuList.classList.add('visible');
+    
                 } 
-
-                MEMOJIAPP.flags.menuOpened = 0;
-                menuList.classList.remove('visible');
-                
-            }
-
-
-        } else if(event.target.closest('.pauseWindow .button')) {
-            MEMOJIAPP.flags.pause = 0;
-            modalWindow.classList.remove('visible');
-            pauseWindow.classList.remove('visible');
-            MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
-
-
-        } else if(!event.target.closest('.modalWindow__popupWindow')) {
-            MEMOJIAPP.flags.difficultyWindowOpened = 0;
-            difficultyWindow.classList.remove('visible');
-
-            MEMOJIAPP.flags.recordsTableWindowOpened = 0;
-            recordsWindow.classList.remove('visible');
-
-            if(!MEMOJIAPP.flags.pause) {
+    
+    
+            } else if(event.target.closest('.pauseWindow .button')) {
+                MEMOJIAPP.flags.pause = 0;
                 modalWindow.classList.remove('visible');
-            }
-            
-
-        } 
+                pauseWindow.classList.remove('visible');
+                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+    
+            } else if(!event.target.closest('.modalWindow__popupWindow')) {
+                MEMOJIAPP.flags.difficultyWindowOpened = 0;
+                difficultyWindow.classList.remove('visible');
+    
+                MEMOJIAPP.flags.recordsTableWindowOpened = 0;
+                recordsWindow.classList.remove('visible');
+    
+                if(!MEMOJIAPP.flags.pause) {
+                    modalWindow.classList.remove('visible');
+                }
+                
+    
+            } 
+        }
     }, true);
 }
 
@@ -417,6 +413,7 @@ function clickControl() {
     //startGameWindow(); 
     putCardsOnTable();
     clickControl();
+    clickPopupButton();
     //rotate();
     //cardsContainer.addEventListener('click', rotate(/*event*/), false);
 })();
