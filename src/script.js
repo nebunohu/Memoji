@@ -25,19 +25,55 @@ class Card {
 	constructor(id) {
 		this.id = id;
     }
-    getFlipperNode(flipper) {
+    setFlipperNode(flipper) {
         this.flipper = flipper;
     }
 
-    getBackNode(back) {
+    setBackNode(back) {
         this.back = back;
     }
-    getImageNode(image) {
+    setImageNode(image) {
         this.image = image;
     }
 }
 
-function rotate(event) {
+/* 
+    Функция перемешивает эмодзи в случайном порядке
+*/
+MEMOJIAPP.mixEmojis = function () {
+    let emojis = ['🐰', '🐰', '🐶', '🐶', '🐱', '🐱', '🐼', '🐼', '🐵', '🐵', '🐯','🐯'];
+
+    emojis = emojis.sort(function(){
+        return Math.random() - 0.5;
+    });
+    return emojis;
+}
+
+MEMOJIAPP.putCardsOnTable = function () {
+    let emojis,
+        imgsArray = [],
+        i,
+        backs = MEMOJIAPP.backs,
+        cards = MEMOJIAPP.cards,
+        flippers = MEMOJIAPP.flippers;
+
+    emojis = MEMOJIAPP.mixEmojis();
+
+    for(i=0; i < emojis.length; i++)
+    {
+        imgsArray.push(document.createElement('div'));
+        imgsArray[i].textContent = emojis[i];
+        imgsArray[i].className = 'image_wrapper';
+        backs[i].appendChild(imgsArray[i]);
+        cards.push(new Card(i));
+        cards[i].setFlipperNode(flippers[i]);
+        cards[i].setBackNode(backs[i]);
+        cards[i].setImageNode(imgsArray[i].textContent);
+    }
+
+}
+
+MEMOJIAPP.rotate = function(event) {
     let currentCard = null,
         cardsContainer = MEMOJIAPP.cardsContainer,
         firstClick = MEMOJIAPP.flags.firstClick,
@@ -52,7 +88,7 @@ function rotate(event) {
         if(MEMOJIAPP.flags.firstClick)
         {
             MEMOJIAPP.flags.firstClick = 0;
-            MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+            MEMOJIAPP.timer.id = window.setInterval(() => MEMOJIAPP.decrTimer(),1000);
         }
     
         // сохранение индекса текущего элемента
@@ -75,52 +111,17 @@ function rotate(event) {
             openedCards.splice(0,1);
         }
     }
-    if(openedCards.length > 1) compareCards();
+    if(openedCards.length > 1) MEMOJIAPP.compareCards();
 
 }
 
-/* 
-    Функция перемешивает эмодзи в случайном порядке
-*/
-function mixEmojis () {
-    let emojis = ['🐰', '🐰', '🐶', '🐶', '🐱', '🐱', '🐼', '🐼', '🐵', '🐵', '🐯','🐯'];
 
-    emojis = emojis.sort(function(){
-        return Math.random() - 0.5;
-    });
-    return emojis;
-}
-
-function putCardsOnTable() {
-    let emojis,
-        imgsArray = [],
-        i,
-        backs = MEMOJIAPP.backs,
-        cards = MEMOJIAPP.cards,
-        flippers = MEMOJIAPP.flippers;
-
-    emojis = mixEmojis();
-
-    for(i=0; i < emojis.length; i++)
-    {
-        imgsArray.push(document.createElement('div'));
-        imgsArray[i].textContent = emojis[i];
-        imgsArray[i].className = 'image_wrapper';
-        backs[i].appendChild(imgsArray[i]);
-        cards.push(new Card(i));
-        cards[i].getFlipperNode(flippers[i]);
-        cards[i].getBackNode(backs[i]);
-        cards[i].getImageNode(imgsArray[i].textContent);
-    }
-
-}
-
-function putNewCards() {
+MEMOJIAPP.putNewCards = function() {
     let emojis,
         imgsArray = Array.from(document.querySelectorAll('.image_wrapper')),
         cards = MEMOJIAPP.cards;
 
-    emojis = mixEmojis();
+    emojis = MEMOJIAPP.mixEmojis();
     for(let i =0; i < emojis.length; i++)
     {
         cards[i].image = emojis[i];
@@ -128,7 +129,7 @@ function putNewCards() {
     }
 }
 
-function toDefault() {
+MEMOJIAPP.toDefault = function() {
     let timerObj = document.querySelector('.playground__timerWrapper'),
         cards = MEMOJIAPP.cards,
         openedCards = MEMOJIAPP.openedCards,
@@ -148,11 +149,11 @@ function toDefault() {
     timerObj.textContent = '01:00';
     MEMOJIAPP.flags.lose = 0;
     MEMOJIAPP.flags.win = 0;
-    putNewCards();
+    MEMOJIAPP.putNewCards();
 
 }
 
-function endGame() {
+MEMOJIAPP.endGame = function() {
     let popupWindow = document.querySelector('.afterGame'),
         modalWindow = document.querySelector('.modalWindow'),
         timerId = MEMOJIAPP.timer.id;
@@ -163,7 +164,7 @@ function endGame() {
     
 }
 
-function clickPopupButton() {
+ MEMOJIAPP.clickPopupButton = function() {
     let popupButtons = document.querySelectorAll('.modalWindow__popupWindow .button'),
         modalWindow = document.querySelector('.modalWindow');
 
@@ -189,12 +190,12 @@ function clickPopupButton() {
             button.classList.remove('pressed');
             modalWindow.classList.remove('visible');
             popupWindow.classList.remove('visible');
-            if(button === popupButtons[0]) toDefault();
+            if(button === popupButtons[0]) MEMOJIAPP.toDefault();
         }
     }, true);
 }
 
-function gameEndingTextOunput(text) {
+MEMOJIAPP.gameEndingTextOunput = function(text) {
     let letters,
         letterSpan,
         deletingText = document.querySelectorAll('.popupText span'),
@@ -216,12 +217,12 @@ function gameEndingTextOunput(text) {
     
 }
 
-function win() {
+MEMOJIAPP.win = function() {
     let win = 1,        
         cards = MEMOJIAPP.cards,
         i;
 
-    gameEndingTextOunput('W.i.n');
+        MEMOJIAPP.gameEndingTextOunput('W.i.n');
 
     for(i = 0; i < cards.length; i++)
     {
@@ -230,18 +231,18 @@ function win() {
     if(win)
     {
         MEMOJIAPP.flags.win = 1;
-        endGame();
+        MEMOJIAPP.endGame();
     } 
 
 }
 
-function lose() {
-    gameEndingTextOunput('L.o.s.e');
+MEMOJIAPP.lose = function() {
+    MEMOJIAPP.gameEndingTextOunput('L.o.s.e');
     
-    endGame();
+    MEMOJIAPP.endGame();
 }
 
-function decrTimer() {
+MEMOJIAPP.decrTimer = function() {
     let timerWrapper = document.querySelector('.playground__timerWrapper'),
         minutes, seconds,
         minutesStr, secondsStr,     // Значения минут и секунд записанные строкой 
@@ -259,11 +260,11 @@ function decrTimer() {
    if(!MEMOJIAPP.timer.counter)
    {
        clearInterval(MEMOJIAPP.timer.id);
-       lose();
+       MEMOJIAPP.lose();
    }
 }
 
-function compareCards() {
+ MEMOJIAPP.compareCards = function() {
     let correct = 1,
         openedCards = MEMOJIAPP.openedCards,
         cards = MEMOJIAPP.cards,
@@ -302,11 +303,11 @@ function compareCards() {
     {
         if(!cards[i].back.classList.contains('correct')) correct = 0;
     }
-    if(correct) win();
+    if(correct) MEMOJIAPP.win();
         
 }
 
-function clickControl() {
+ MEMOJIAPP.clickControl = function() {
     let menuList = document.querySelector(".menuBlock__list"),
         modalWindow = document.querySelector(".modalWindow"),
         pauseWindow = document.querySelector(".pauseWindow"),
@@ -319,7 +320,7 @@ function clickControl() {
     htmlDocument.addEventListener('click', function(event) {
         if(MEMOJIAPP.flags.menuOpened) {
             if(event.target.closest('#newGame')) {
-                toDefault();
+                MEMOJIAPP.toDefault();
                 clearInterval(MEMOJIAPP.timer.id);
         
             } else if (event.target.closest('#difficulty')) {
@@ -337,7 +338,7 @@ function clickControl() {
             menuList.classList.remove('visible');
         } else {
             if(event.target.closest('.playground__cardsContainer')) {
-                rotate(event);
+                MEMOJIAPP.rotate(event);
             } else if(event.target.closest('.menuBlock')) {
                 if(event.target.closest('.menuBlock__pauseButton')) {
                     MEMOJIAPP.flags.pause = 1;
@@ -356,7 +357,7 @@ function clickControl() {
                 MEMOJIAPP.flags.pause = 0;
                 modalWindow.classList.remove('visible');
                 pauseWindow.classList.remove('visible');
-                MEMOJIAPP.timer.id = window.setInterval(() => decrTimer(),1000);
+                MEMOJIAPP.timer.id = window.setInterval(() => MEMOJIAPP.decrTimer(),1000);
     
             } else if(!event.target.closest('.modalWindow__popupWindow')) {
                 MEMOJIAPP.flags.difficultyWindowOpened = 0;
@@ -375,7 +376,7 @@ function clickControl() {
     }, true);
 }
 
-(function startGame(){
+MEMOJIAPP.startgame = (function (){
     MEMOJIAPP.namespace('cards'); // Массив всех карточек на игровом поле
     MEMOJIAPP.cards = [];
     MEMOJIAPP.namespace('backs'); // Массив всех задников на игровом поле
@@ -409,11 +410,16 @@ function clickControl() {
     MEMOJIAPP.namespace('resultTable.playerName');
     MEMOJIAPP.namespace('resultTable.score');
 
-    //menuControl();
-    //startGameWindow(); 
-    putCardsOnTable();
-    clickControl();
-    clickPopupButton();
-    //rotate();
-    //cardsContainer.addEventListener('click', rotate(/*event*/), false);
-})();
+    MEMOJIAPP.putCardsOnTable();
+    MEMOJIAPP.clickControl();
+    MEMOJIAPP.clickPopupButton();
+}());
+
+
+
+
+
+
+
+
+
